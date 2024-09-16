@@ -6,7 +6,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 const createEntry = asyncHandler(async (req, res) => {
   console.log(req.body);
 
-  const { id, type, amount, date, category, userId } = req.body.data;
+  const { id, type, amount, date, category, userId, description } =
+    req.body.data;
 
   if (!id || !type || !amount || !date || !category || !userId) {
     throw new ApiError(400, "All fields are required");
@@ -18,6 +19,7 @@ const createEntry = asyncHandler(async (req, res) => {
     amount,
     date,
     category,
+    description,
     userId,
   });
 
@@ -56,4 +58,29 @@ const getEntryByUserId = asyncHandler(async (req, res) => {
     );
 });
 
-export { createEntry, getEntryByUserId };
+const getEntryByMonth = asyncHandler(async (req, res) => {
+  const { userId, month, year } = req.params;
+  console.log(userId, month, year);
+
+  const entries = await Entry.find({ userId: userId });
+
+  const filteredEntries = entries.filter((entry) => {
+    // Assuming the date is stored in entry.date as a string in DD-MM-YYYY format
+    const [day, entryMonth, entryYear] = entry.date.split("-").map(Number);
+
+    // Convert month parameter to a number and compare with the entryMonth (entryMonth is 1-based)
+    return entryMonth === parseInt(month) && entryYear === parseInt(year);
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        filteredEntries,
+        "Entries for the current month retrieved successfully"
+      )
+    );
+});
+
+export { createEntry, getEntryByUserId, getEntryByMonth };

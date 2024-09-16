@@ -7,6 +7,7 @@ const entrySchema = new Schema({
   date: { type: String, required: true },
   category: { type: String, required: true },
   userId: { type: Number, required: true },
+  description: { type: String },
 });
 
 export const Entry = mongoose.model("Entry", entrySchema);
