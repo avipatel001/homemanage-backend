@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createEntry,
+  getAllEntry,
   getEntryByMonth,
   getEntryByUserId,
 } from "../controllers/entrys.controller.js";
@@ -10,6 +11,8 @@ const router = Router();
 router.route("/createEntry").post(createEntry);
 
 router.route("/getEntryByUserId/userId=:userId").get(getEntryByUserId);
+
+router.route("/getAllEntry").get(getAllEntry);
 
 router
   .route("/getEntryByMonth/userId=:userId/month=:month/year=:year")

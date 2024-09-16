@@ -83,4 +83,11 @@ const getEntryByMonth = asyncHandler(async (req, res) => {
     );
 });
 
-export { createEntry, getEntryByUserId, getEntryByMonth };
+const getAllEntry = asyncHandler(async (req, res) => {
+  const entries = await Entry.find();
+  return res
+    .status(200)
+    .json(new ApiResponse(200, entries, "All entries retrieved successfully"));
+});
+
+export { createEntry, getEntryByUserId, getEntryByMonth, getAllEntry };
