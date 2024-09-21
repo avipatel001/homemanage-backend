@@ -7,51 +7,11 @@ import { User } from "../models/user.model.js";
 import bcrypt from "bcrypt";
 
 let otpStorage = {};
-console.log(otpStorage);
 
 // Function to generate a random OTP
 function generateOTP() {
   return crypto.randomInt(100000, 999999); // Generates a 6-digit OTP
 }
-
-// async function sendOTP(email) {
-//   try {
-//     let user = await User.findOne({ email: email });
-
-//     if (user) {
-//       throw new ApiError(400, "User already exists");
-//     } else {
-//       let transporter = nodemailer.createTransport({
-//         service: "gmail",
-//         auth: {
-//           user: process.env.EMAIL_USER, // Your Gmail address from .env
-//           pass: process.env.EMAIL_PASS, // Your Gmail password or app password from .env
-//         },
-//       });
-
-//       const otp = generateOTP();
-
-//       let mailOptions = {
-//         from: process.env.EMAIL_USER,
-//         to: email,
-//         subject: "Your OTP for Registration",
-//         text: `Your OTP is ${otp}. Please use this to complete your registration.`,
-//         html: `<p>Your OTP is <b>${otp}</b>. Please use this to complete your registration.</p>`,
-//       };
-
-//       let info = await transporter.sendMail(mailOptions);
-//       console.log("Email sent: " + info.response);
-
-//       // Store OTP and email temporarily (e.g., in database or Redis)
-//       otpStorage[email] = { otp: otp, createdAt: Date.now() };
-//       console.log(otpStorage);
-
-//       return otp;
-//     }
-//   } catch (error) {
-//     throw "Error sending email: " + error;
-//   }
-// }
 
 async function sendOTP(email) {
   let transporter = nodemailer.createTransport({
@@ -76,7 +36,6 @@ async function sendOTP(email) {
     };
 
     let info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
 
     otpStorage[email] = { otp, createdAt: Date.now() };
   } else {
@@ -89,7 +48,6 @@ async function sendOTP(email) {
     };
 
     let info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
 
     otpStorage[email] = { otp, createdAt: Date.now() };
   }
@@ -120,20 +78,6 @@ function verifyOTP(email, enteredOTP) {
   }
 }
 
-// const sendOTPController = asyncHandler(async (req, res) => {
-//   const { email } = req.body;
-
-//   const sendotp = await sendOTP(email);
-
-//   console.log("sendotp", sendotp);
-
-//   if (!sendotp) {
-//     throw new ApiError(500, "Failed to send OTP");
-//   }
-
-//   res.status(200).json(new ApiResponse(200, sendotp, "OTP sent successfully"));
-// });
-
 const sendOTPController = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
@@ -154,7 +98,6 @@ const sendOTPController = asyncHandler(async (req, res) => {
 
 const otpVerifyController = asyncHandler(async (req, res) => {
   const { data } = req.body;
-  console.log(req.body);
   let email = data.email;
   let enteredOTP = data.otp;
 
@@ -201,7 +144,6 @@ const createUser = asyncHandler(async (req, res) => {
 
 const userLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
 
   const user = await User.findOne({ email: email });
 
@@ -220,7 +162,6 @@ const userLogin = asyncHandler(async (req, res) => {
 
 const forgotPasswordOTP = asyncHandler(async (req, res) => {
   const { email } = req.body;
-  console.log(req.body);
 
   const user = await User.findOne({ email: email });
 
