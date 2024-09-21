@@ -148,7 +148,7 @@ const userLogin = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: email });
 
   if (!user) {
-    throw new ApiError(400, "User not found");
+    throw new ApiError(400, "User not found!");
   }
 
   if (!(await user.isValidPassword(password))) {
